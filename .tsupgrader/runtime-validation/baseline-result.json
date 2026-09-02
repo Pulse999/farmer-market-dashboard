@@ -1,0 +1,38 @@
+{
+  "planHash": "e3cd1da9c0781adb996dd00374fb9de9af287b9d61d400f0c2bdb0737988e241",
+  "phase": "baseline",
+  "recordedAtUtc": "2026-09-01T07:54:02.0795694Z",
+  "retryCount": 0,
+  "resetBaseline": true,
+  "result": {
+    "setupSucceeded": true,
+    "setupDurationMs": 0,
+    "setupFailureOutput": null,
+    "assertions": [
+      {
+        "name": "Node.js is available",
+        "kind": "process",
+        "verificationMethod": "exit-code",
+        "passed": false,
+        "timedOut": false,
+        "skipped": false,
+        "skippedReason": null,
+        "exitCode": null,
+        "outputSample": "\u003Cspawn error: An error occurred trying to start process \u0027node --version\u0027 with working directory \u0027c:\\Users\\KeneT\\Desktop\\farmer-market-dashboard\u0027. The system cannot find the file specified.\u003E\n",
+        "durationMs": 6
+      },
+      {
+        "name": "TypeScript is installed",
+        "kind": "process",
+        "verificationMethod": "exit-code",
+        "passed": false,
+        "timedOut": false,
+        "skipped": false,
+        "skippedReason": null,
+        "exitCode": null,
+        "outputSample": "\u003Cspawn error: An error occurred trying to start process \u0027npx tsc --version\u0027 with working directory \u0027c:\\Users\\KeneT\\Desktop\\farmer-market-dashboard\u0027. The system cannot find the file specified.\u003E\n",
+        "durationMs": 7
+      }
+    ]
+  }
+}

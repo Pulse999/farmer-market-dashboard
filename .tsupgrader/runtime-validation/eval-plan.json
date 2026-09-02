@@ -1,0 +1,24 @@
+{
+  "version": "1.0",
+  "projectType": "webapp",
+  "title": "Farmer Market Dashboard Build Validation",
+  "description": "Validates that the Next.js app builds successfully after dependency upgrades",
+  "assertions": [
+    {
+      "id": "node-available",
+      "name": "Node.js is available",
+      "type": "process",
+      "command": "node --version",
+      "expected": "success",
+      "description": "Node.js should be available in PATH"
+    },
+    {
+      "id": "typescript-available",
+      "name": "TypeScript is installed",
+      "type": "process",
+      "command": "npx tsc --version",
+      "expected": "success",
+      "description": "TypeScript compiler should be available"
+    }
+  ]
+}
