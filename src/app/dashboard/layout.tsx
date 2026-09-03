@@ -1,5 +1,7 @@
+// src/app/dashboard/layout.tsx
 import type { ReactNode } from "react";
 import Sidebar from "@/components/dashboard/sidebar";
+import Topbar from "@/components/dashboard/topbar";
 
 export default function DashboardLayout({
   children,
@@ -11,23 +13,7 @@ export default function DashboardLayout({
       <Sidebar />
 
       <main className="flex-1">
-        <header className="h-16 border-b px-6 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">
-            Dashboard
-          </h2>
-
-          <div className="flex items-center gap-4">
-            <input
-              type="text"
-              placeholder="Search..."
-              className="rounded-md border px-3 py-2 text-sm"
-            />
-
-            <span className="text-sm text-muted-foreground">
-              User / Profile
-            </span>
-          </div>
-        </header>
+        <Topbar />
 
         <section className="p-6">
           {children}
