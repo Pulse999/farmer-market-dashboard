@@ -1,7 +1,8 @@
-import { Plus, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import ListingsTable from "@/components/dashboard/listings-table";
+import AddListingDialog from "@/components/dashboard/add-listing-dialog";
 
 export default function ListingsPage() {
   return (
@@ -16,10 +17,7 @@ export default function ListingsPage() {
           </p>
         </div>
 
-        <Button>
-          <Plus className="mr-2 h-4 w-4" />
-          Add Listing
-        </Button>
+        <AddListingDialog />
       </div>
 
       {/* Search and Filters */}
