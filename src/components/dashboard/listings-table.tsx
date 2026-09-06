@@ -1,5 +1,5 @@
 import { MoreHorizontal } from "lucide-react";
-
+import type { Listing } from "@/lib/listings";
 import {
   Table,
   TableBody,
@@ -15,55 +15,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-const listings = [
-  {
-    id: "LST-001",
-    product: "Fresh Tomatoes",
-    farmer: "Green Valley Farm",
-    category: "Vegetables",
-    price: "R25 / kg",
-    quantity: "500 kg",
-    status: "Active",
-  },
-  {
-    id: "LST-002",
-    product: "Golden Apples",
-    farmer: "Sunrise Produce",
-    category: "Fruits",
-    price: "R35 / kg",
-    quantity: "300 kg",
-    status: "Active",
-  },
-  {
-    id: "LST-003",
-    product: "Yellow Maize",
-    farmer: "Free State Organics",
-    category: "Grains",
-    price: "R18 / kg",
-    quantity: "1,200 kg",
-    status: "Active",
-  },
-  {
-    id: "LST-004",
-    product: "Fresh Milk",
-    farmer: "Harvest Fields",
-    category: "Dairy",
-    price: "R22 / litre",
-    quantity: "800 litres",
-    status: "Inactive",
-  },
-  {
-    id: "LST-005",
-    product: "Free Range Eggs",
-    farmer: "Golden Grain Farm",
-    category: "Livestock",
-    price: "R65 / dozen",
-    quantity: "150 dozen",
-    status: "Active",
-  },
-];
 
-export default function ListingsTable() {
+type ListingsTableProps = {
+  listings: Listing[];
+};
+
+export default function ListingsTable({ listings }: ListingsTableProps) {
   return (
     <div className="rounded-lg border">
       <Table>
