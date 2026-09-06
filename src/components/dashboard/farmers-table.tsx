@@ -30,9 +30,17 @@ export type Farmer = {
 
 type FarmersTableProps = {
   farmers: Farmer[];
+  onView: (farmer: Farmer) => void;
+  onEdit: (farmer: Farmer) => void;
+  onDelete: (farmer: Farmer) => void;
 };
 
-export default function FarmersTable({ farmers }: FarmersTableProps) {
+export default function FarmersTable({
+  farmers,
+  onView,
+  onEdit,
+  onDelete,
+}: FarmersTableProps) {
   return (
     <div className="overflow-hidden rounded-lg border">
       <Table>
@@ -44,30 +52,52 @@ export default function FarmersTable({ farmers }: FarmersTableProps) {
             <TableHead>Contact</TableHead>
             <TableHead>Listings</TableHead>
             <TableHead>Status</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
+            <TableHead className="text-right">
+              Actions
+            </TableHead>
           </TableRow>
         </TableHeader>
 
         <TableBody>
-          {farmers.length > 0 ? (
+          {farmers.length === 0 ? (
+            <TableRow>
+              <TableCell
+                colSpan={7}
+                className="h-24 text-center text-muted-foreground"
+              >
+                No farmers found.
+              </TableCell>
+            </TableRow>
+          ) : (
             farmers.map((farmer) => (
               <TableRow key={farmer.id}>
                 <TableCell>
                   <div>
-                    <p className="font-medium">{farmer.name}</p>
+                    <p className="font-medium">
+                      {farmer.name}
+                    </p>
+
                     <p className="text-xs text-muted-foreground">
                       {farmer.id}
                     </p>
                   </div>
                 </TableCell>
 
-                <TableCell>{farmer.farm}</TableCell>
+                <TableCell>
+                  {farmer.farm}
+                </TableCell>
 
-                <TableCell>{farmer.location}</TableCell>
+                <TableCell>
+                  {farmer.location}
+                </TableCell>
 
-                <TableCell>{farmer.contact}</TableCell>
+                <TableCell>
+                  {farmer.contact}
+                </TableCell>
 
-                <TableCell>{farmer.listings}</TableCell>
+                <TableCell>
+                  {farmer.listings}
+                </TableCell>
 
                 <TableCell>
                   <span
@@ -96,15 +126,22 @@ export default function FarmersTable({ farmers }: FarmersTableProps) {
                     />
 
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => onView(farmer)}
+                      >
                         View
                       </DropdownMenuItem>
 
-                      <DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => onEdit(farmer)}
+                      >
                         Edit
                       </DropdownMenuItem>
 
-                      <DropdownMenuItem variant="destructive">
+                      <DropdownMenuItem
+                        variant="destructive"
+                        onClick={() => onDelete(farmer)}
+                      >
                         Delete
                       </DropdownMenuItem>
                     </DropdownMenuContent>
@@ -112,15 +149,6 @@ export default function FarmersTable({ farmers }: FarmersTableProps) {
                 </TableCell>
               </TableRow>
             ))
-          ) : (
-            <TableRow>
-              <TableCell
-                colSpan={7}
-                className="h-24 text-center text-muted-foreground"
-              >
-                No farmers found.
-              </TableCell>
-            </TableRow>
           )}
         </TableBody>
       </Table>

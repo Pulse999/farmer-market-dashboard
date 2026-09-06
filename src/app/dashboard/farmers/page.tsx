@@ -1,16 +1,21 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Plus, Search } from "lucide-react";
+import { Search } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 import FarmersTable, {
   type Farmer,
 } from "@/components/dashboard/farmers-table";
 
-const farmers: Farmer[] = [
+import AddFarmerDialog from "@/components/dashboard/add-farmer-dialog";
+
+import ViewFarmerDialog from "@/components/dashboard/view-farmer-dialog";
+
+import EditFarmerDialog from "@/components/dashboard/edit-farmer-dialog";
+
+const initialFarmers: Farmer[] = [
   {
     id: "FAR-001",
     name: "Thabo Mokoena",
@@ -59,44 +64,115 @@ const farmers: Farmer[] = [
 ];
 
 export default function FarmersPage() {
+  const [farmers, setFarmers] =
+    useState<Farmer[]>(initialFarmers);
+
   const [search, setSearch] = useState("");
+
   const [status, setStatus] = useState<
     "All" | "Active" | "Inactive"
   >("All");
+
+  const [selectedFarmer, setSelectedFarmer] =
+    useState<Farmer | null>(null);
+
+  const [viewOpen, setViewOpen] = useState(false);
+
+  const [editOpen, setEditOpen] = useState(false);
 
   const filteredFarmers = useMemo(() => {
     const searchValue = search.toLowerCase().trim();
 
     return farmers.filter((farmer) => {
       const matchesSearch =
-        farmer.name.toLowerCase().includes(searchValue) ||
-        farmer.id.toLowerCase().includes(searchValue) ||
-        farmer.farm.toLowerCase().includes(searchValue) ||
-        farmer.location.toLowerCase().includes(searchValue);
+        farmer.name
+          .toLowerCase()
+          .includes(searchValue) ||
+        farmer.id
+          .toLowerCase()
+          .includes(searchValue) ||
+        farmer.farm
+          .toLowerCase()
+          .includes(searchValue) ||
+        farmer.location
+          .toLowerCase()
+          .includes(searchValue);
 
       const matchesStatus =
-        status === "All" || farmer.status === status;
+        status === "All" ||
+        farmer.status === status;
 
       return matchesSearch && matchesStatus;
     });
-  }, [search, status]);
+  }, [farmers, search, status]);
+
+  const handleAddFarmer = (farmer: Farmer) => {
+    setFarmers((currentFarmers) => [
+      ...currentFarmers,
+      farmer,
+    ]);
+  };
+
+  const handleViewFarmer = (farmer: Farmer) => {
+    setSelectedFarmer(farmer);
+    setViewOpen(true);
+  };
+
+  const handleEditFarmer = (farmer: Farmer) => {
+    setSelectedFarmer(farmer);
+    setEditOpen(true);
+  };
+
+  const handleSaveFarmer = (updatedFarmer: Farmer) => {
+    setFarmers((currentFarmers) =>
+      currentFarmers.map((farmer) =>
+        farmer.id === updatedFarmer.id
+          ? updatedFarmer
+          : farmer
+      )
+    );
+  };
+
+  const handleDeleteFarmer = (farmer: Farmer) => {
+    const confirmed = window.confirm(
+      `Are you sure you want to delete ${farmer.name}?`
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    setFarmers((currentFarmers) =>
+      currentFarmers.filter(
+        (currentFarmer) =>
+          currentFarmer.id !== farmer.id
+      )
+    );
+
+    if (selectedFarmer?.id === farmer.id) {
+      setSelectedFarmer(null);
+      setViewOpen(false);
+      setEditOpen(false);
+    }
+  };
 
   return (
     <div className="space-y-6">
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Farmers</h1>
+          <h1 className="text-2xl font-bold">
+            Farmers
+          </h1>
 
           <p className="mt-1 text-sm text-muted-foreground">
             Manage farmers registered on the marketplace.
           </p>
         </div>
 
-        <Button>
-          <Plus className="mr-2 h-4 w-4" />
-          Add Farmer
-        </Button>
+        <AddFarmerDialog
+          onAddFarmer={handleAddFarmer}
+        />
       </div>
 
       {/* Search and Filters */}
@@ -106,7 +182,9 @@ export default function FarmersPage() {
 
           <Input
             value={search}
-            onChange={(event) => setSearch(event.target.value)}
+            onChange={(event) =>
+              setSearch(event.target.value)
+            }
             placeholder="Search farmers..."
             className="pl-9"
           />
@@ -116,19 +194,50 @@ export default function FarmersPage() {
           value={status}
           onChange={(event) =>
             setStatus(
-              event.target.value as "All" | "Active" | "Inactive"
+              event.target.value as
+                | "All"
+                | "Active"
+                | "Inactive"
             )
           }
           className="h-10 rounded-md border bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
         >
-          <option value="All">All Statuses</option>
-          <option value="Active">Active</option>
-          <option value="Inactive">Inactive</option>
+          <option value="All">
+            All Statuses
+          </option>
+
+          <option value="Active">
+            Active
+          </option>
+
+          <option value="Inactive">
+            Inactive
+          </option>
         </select>
       </div>
 
       {/* Farmers Table */}
-      <FarmersTable farmers={filteredFarmers} />
+      <FarmersTable
+        farmers={filteredFarmers}
+        onView={handleViewFarmer}
+        onEdit={handleEditFarmer}
+        onDelete={handleDeleteFarmer}
+      />
+
+      {/* View Farmer */}
+      <ViewFarmerDialog
+        farmer={selectedFarmer}
+        open={viewOpen}
+        onOpenChange={setViewOpen}
+      />
+
+      {/* Edit Farmer */}
+      <EditFarmerDialog
+        farmer={selectedFarmer}
+        open={editOpen}
+        onOpenChange={setEditOpen}
+        onSave={handleSaveFarmer}
+      />
     </div>
   );
 }
