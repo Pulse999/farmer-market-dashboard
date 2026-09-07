@@ -61,16 +61,16 @@ export default function BuyersPage() {
   };
 
   const handleDeleteBuyer = (buyer: Buyer) => {
-  const confirmed = window.confirm(
-    `Are you sure you want to delete ${buyer.name}?`
-  );
+    const confirmed = window.confirm(
+      `Are you sure you want to delete ${buyer.name}?`,
+    );
 
-  if (!confirmed) return;
+    if (!confirmed) return;
 
-  setBuyers((currentBuyers) =>
-    currentBuyers.filter((currentBuyer) => currentBuyer.id !== buyer.id)
-  );
-};
+    setBuyers((currentBuyers) =>
+      currentBuyers.filter((currentBuyer) => currentBuyer.id !== buyer.id),
+    );
+  };
 
   const filteredBuyers = useMemo(() => {
     const searchValue = search.toLowerCase().trim();
@@ -208,7 +208,10 @@ export default function BuyersPage() {
                         Edit
                       </DropdownMenuItem>
 
-                      <DropdownMenuItem className="text-red-600">
+                      <DropdownMenuItem
+                        onClick={() => handleDeleteBuyer(buyer)}
+                        className="text-red-600"
+                      >
                         Delete
                       </DropdownMenuItem>
                     </DropdownMenuContent>
