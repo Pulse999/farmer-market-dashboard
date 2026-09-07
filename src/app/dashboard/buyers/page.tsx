@@ -60,6 +60,18 @@ export default function BuyersPage() {
     setEditBuyerOpen(true);
   };
 
+  const handleDeleteBuyer = (buyer: Buyer) => {
+  const confirmed = window.confirm(
+    `Are you sure you want to delete ${buyer.name}?`
+  );
+
+  if (!confirmed) return;
+
+  setBuyers((currentBuyers) =>
+    currentBuyers.filter((currentBuyer) => currentBuyer.id !== buyer.id)
+  );
+};
+
   const filteredBuyers = useMemo(() => {
     const searchValue = search.toLowerCase().trim();
 
