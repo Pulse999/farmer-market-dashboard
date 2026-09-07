@@ -1,17 +1,37 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Plus, Search } from "lucide-react";
+import { MoreHorizontal, Plus, Search } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { initialBuyers, Buyer } from "@/lib/buyers";
+
 import AddBuyerDialog from "@/components/dashboard/add-buyer-dialog";
+import ViewBuyerDialog from "@/components/dashboard/view-buyer-dialog";
+
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export default function BuyersPage() {
   const [buyers, setBuyers] = useState<Buyer[]>(initialBuyers);
+
   const [addBuyerOpen, setAddBuyerOpen] = useState(false);
+
+  const [selectedBuyer, setSelectedBuyer] =
+    useState<Buyer | null>(null);
+
+  const [viewBuyerOpen, setViewBuyerOpen] = useState(false);
+
   const [search, setSearch] = useState("");
-  const [status, setStatus] = useState<"All" | "Active" | "Inactive">("All");
+
+  const [status, setStatus] = useState<
+    "All" | "Active" | "Inactive"
+  >("All");
 
   const handleAddBuyer = (buyerData: {
     name: string;
@@ -26,7 +46,15 @@ export default function BuyersPage() {
       ...buyerData,
     };
 
-    setBuyers((currentBuyers) => [...currentBuyers, newBuyer]);
+    setBuyers((currentBuyers) => [
+      ...currentBuyers,
+      newBuyer,
+    ]);
+  };
+
+  const handleViewBuyer = (buyer: Buyer) => {
+    setSelectedBuyer(buyer);
+    setViewBuyerOpen(true);
   };
 
   const filteredBuyers = useMemo(() => {
@@ -39,7 +67,8 @@ export default function BuyersPage() {
         buyer.location.toLowerCase().includes(searchValue) ||
         buyer.contact.toLowerCase().includes(searchValue);
 
-      const matchesStatus = status === "All" || buyer.status === status;
+      const matchesStatus =
+        status === "All" || buyer.status === status;
 
       return matchesSearch && matchesStatus;
     });
@@ -51,6 +80,7 @@ export default function BuyersPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">Buyers</h1>
+
           <p className="mt-1 text-sm text-muted-foreground">
             Manage buyers registered on the marketplace.
           </p>
@@ -70,7 +100,9 @@ export default function BuyersPage() {
           <Input
             placeholder="Search buyers..."
             value={search}
-            onChange={(event) => setSearch(event.target.value)}
+            onChange={(event) =>
+              setSearch(event.target.value)
+            }
             className="pl-9"
           />
         </div>
@@ -78,7 +110,12 @@ export default function BuyersPage() {
         <select
           value={status}
           onChange={(event) =>
-            setStatus(event.target.value as "All" | "Active" | "Inactive")
+            setStatus(
+              event.target.value as
+                | "All"
+                | "Active"
+                | "Inactive"
+            )
           }
           className="h-10 rounded-md border bg-background px-3 text-sm"
         >
@@ -93,39 +130,67 @@ export default function BuyersPage() {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b bg-muted/30">
-              <th className="px-3 py-3 text-left font-medium">Buyer</th>
+              <th className="px-3 py-3 text-left font-medium">
+                Buyer
+              </th>
 
-              <th className="px-3 py-3 text-left font-medium">Type</th>
+              <th className="px-3 py-3 text-left font-medium">
+                Type
+              </th>
 
-              <th className="px-3 py-3 text-left font-medium">Location</th>
+              <th className="px-3 py-3 text-left font-medium">
+                Location
+              </th>
 
-              <th className="px-3 py-3 text-left font-medium">Contact</th>
+              <th className="px-3 py-3 text-left font-medium">
+                Contact
+              </th>
 
-              <th className="px-3 py-3 text-left font-medium">Orders</th>
+              <th className="px-3 py-3 text-left font-medium">
+                Orders
+              </th>
 
-              <th className="px-3 py-3 text-left font-medium">Status</th>
+              <th className="px-3 py-3 text-left font-medium">
+                Status
+              </th>
 
-              <th className="px-3 py-3 text-right font-medium">Actions</th>
+              <th className="px-3 py-3 text-right font-medium">
+                Actions
+              </th>
             </tr>
           </thead>
 
           <tbody>
             {filteredBuyers.map((buyer) => (
-              <tr key={buyer.id} className="border-b last:border-0">
+              <tr
+                key={buyer.id}
+                className="border-b last:border-0"
+              >
                 <td className="px-3 py-3">
-                  <div className="font-medium">{buyer.name}</div>
+                  <div className="font-medium">
+                    {buyer.name}
+                  </div>
+
                   <div className="text-xs text-muted-foreground">
                     {buyer.id}
                   </div>
                 </td>
 
-                <td className="px-3 py-3">{buyer.type}</td>
+                <td className="px-3 py-3">
+                  {buyer.type}
+                </td>
 
-                <td className="px-3 py-3">{buyer.location}</td>
+                <td className="px-3 py-3">
+                  {buyer.location}
+                </td>
 
-                <td className="px-3 py-3">{buyer.contact}</td>
+                <td className="px-3 py-3">
+                  {buyer.contact}
+                </td>
 
-                <td className="px-3 py-3">{buyer.orders}</td>
+                <td className="px-3 py-3">
+                  {buyer.orders}
+                </td>
 
                 <td className="px-3 py-3">
                   <span
@@ -139,14 +204,39 @@ export default function BuyersPage() {
                   </span>
                 </td>
 
+                {/* Actions */}
                 <td className="px-3 py-3 text-right">
-                  <button
-                    type="button"
-                    className="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-muted"
-                    aria-label={`Actions for ${buyer.name}`}
-                  >
-                    ⋯
-                  </button>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger
+                      render={
+                        <button
+                          type="button"
+                          className="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-muted"
+                          aria-label={`Actions for ${buyer.name}`}
+                        >
+                          <MoreHorizontal className="h-4 w-4" />
+                        </button>
+                      }
+                    />
+
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem
+                        onClick={() =>
+                          handleViewBuyer(buyer)
+                        }
+                      >
+                        View
+                      </DropdownMenuItem>
+
+                      <DropdownMenuItem>
+                        Edit
+                      </DropdownMenuItem>
+
+                      <DropdownMenuItem className="text-red-600">
+                        Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </td>
               </tr>
             ))}
@@ -158,13 +248,21 @@ export default function BuyersPage() {
             No buyers found.
           </div>
         )}
-
-        <AddBuyerDialog
-          open={addBuyerOpen}
-          onOpenChange={setAddBuyerOpen}
-          onAdd={handleAddBuyer}
-        />
       </div>
+
+      {/* Add Buyer Dialog */}
+      <AddBuyerDialog
+        open={addBuyerOpen}
+        onOpenChange={setAddBuyerOpen}
+        onAdd={handleAddBuyer}
+      />
+
+      {/* View Buyer Dialog */}
+      <ViewBuyerDialog
+        open={viewBuyerOpen}
+        onOpenChange={setViewBuyerOpen}
+        buyer={selectedBuyer}
+      />
     </div>
   );
 }
