@@ -5,13 +5,29 @@ import { Plus, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { initialBuyers, Buyer } from "@/lib/buyers";
+import AddBuyerDialog from "@/components/dashboard/add-buyer-dialog";
 
 export default function BuyersPage() {
-  const [buyers] = useState<Buyer[]>(initialBuyers);
+  const [buyers, setBuyers] = useState<Buyer[]>(initialBuyers);
+  const [addBuyerOpen, setAddBuyerOpen] = useState(false);
   const [search, setSearch] = useState("");
-  const [status, setStatus] = useState<
-    "All" | "Active" | "Inactive"
-  >("All");
+  const [status, setStatus] = useState<"All" | "Active" | "Inactive">("All");
+
+  const handleAddBuyer = (buyerData: {
+    name: string;
+    type: "Individual" | "Business";
+    location: string;
+    contact: string;
+    orders: number;
+    status: "Active" | "Inactive";
+  }) => {
+    const newBuyer: Buyer = {
+      id: `BUY-${String(buyers.length + 1).padStart(3, "0")}`,
+      ...buyerData,
+    };
+
+    setBuyers((currentBuyers) => [...currentBuyers, newBuyer]);
+  };
 
   const filteredBuyers = useMemo(() => {
     const searchValue = search.toLowerCase().trim();
@@ -23,8 +39,7 @@ export default function BuyersPage() {
         buyer.location.toLowerCase().includes(searchValue) ||
         buyer.contact.toLowerCase().includes(searchValue);
 
-      const matchesStatus =
-        status === "All" || buyer.status === status;
+      const matchesStatus = status === "All" || buyer.status === status;
 
       return matchesSearch && matchesStatus;
     });
@@ -41,7 +56,7 @@ export default function BuyersPage() {
           </p>
         </div>
 
-        <Button>
+        <Button onClick={() => setAddBuyerOpen(true)}>
           <Plus className="mr-2 h-4 w-4" />
           Add Buyer
         </Button>
@@ -63,9 +78,7 @@ export default function BuyersPage() {
         <select
           value={status}
           onChange={(event) =>
-            setStatus(
-              event.target.value as "All" | "Active" | "Inactive"
-            )
+            setStatus(event.target.value as "All" | "Active" | "Inactive")
           }
           className="h-10 rounded-md border bg-background px-3 text-sm"
         >
@@ -80,66 +93,39 @@ export default function BuyersPage() {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b bg-muted/30">
-              <th className="px-3 py-3 text-left font-medium">
-                Buyer
-              </th>
+              <th className="px-3 py-3 text-left font-medium">Buyer</th>
 
-              <th className="px-3 py-3 text-left font-medium">
-                Type
-              </th>
+              <th className="px-3 py-3 text-left font-medium">Type</th>
 
-              <th className="px-3 py-3 text-left font-medium">
-                Location
-              </th>
+              <th className="px-3 py-3 text-left font-medium">Location</th>
 
-              <th className="px-3 py-3 text-left font-medium">
-                Contact
-              </th>
+              <th className="px-3 py-3 text-left font-medium">Contact</th>
 
-              <th className="px-3 py-3 text-left font-medium">
-                Orders
-              </th>
+              <th className="px-3 py-3 text-left font-medium">Orders</th>
 
-              <th className="px-3 py-3 text-left font-medium">
-                Status
-              </th>
+              <th className="px-3 py-3 text-left font-medium">Status</th>
 
-              <th className="px-3 py-3 text-right font-medium">
-                Actions
-              </th>
+              <th className="px-3 py-3 text-right font-medium">Actions</th>
             </tr>
           </thead>
 
           <tbody>
             {filteredBuyers.map((buyer) => (
-              <tr
-                key={buyer.id}
-                className="border-b last:border-0"
-              >
+              <tr key={buyer.id} className="border-b last:border-0">
                 <td className="px-3 py-3">
-                  <div className="font-medium">
-                    {buyer.name}
-                  </div>
+                  <div className="font-medium">{buyer.name}</div>
                   <div className="text-xs text-muted-foreground">
                     {buyer.id}
                   </div>
                 </td>
 
-                <td className="px-3 py-3">
-                  {buyer.type}
-                </td>
+                <td className="px-3 py-3">{buyer.type}</td>
 
-                <td className="px-3 py-3">
-                  {buyer.location}
-                </td>
+                <td className="px-3 py-3">{buyer.location}</td>
 
-                <td className="px-3 py-3">
-                  {buyer.contact}
-                </td>
+                <td className="px-3 py-3">{buyer.contact}</td>
 
-                <td className="px-3 py-3">
-                  {buyer.orders}
-                </td>
+                <td className="px-3 py-3">{buyer.orders}</td>
 
                 <td className="px-3 py-3">
                   <span
@@ -172,6 +158,12 @@ export default function BuyersPage() {
             No buyers found.
           </div>
         )}
+
+        <AddBuyerDialog
+          open={addBuyerOpen}
+          onOpenChange={setAddBuyerOpen}
+          onAdd={handleAddBuyer}
+        />
       </div>
     </div>
   );
